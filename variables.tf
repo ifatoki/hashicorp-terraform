@@ -17,3 +17,13 @@ variable "key_name" {
   description = "Desired name of AWS key pair"
   type = string
 }
+
+variable "web_server_address_green" {
+  type = string
+  default = null
+}
+
+variable "web_server_zone_id_green" {
+  type    = string
+  default = null
+}

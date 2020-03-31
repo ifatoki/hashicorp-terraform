@@ -1,6 +1,7 @@
 module "web_server_blue" {
   source = "git@github.com:ifatoki/web-server-terraform.git?ref=develop"
 
+  app_version = "100"
   vpc_route_table_id = aws_vpc.default.main_route_table_id
   elb_sg_id = aws_security_group.elb.id
   default_sg_id = aws_security_group.default.id

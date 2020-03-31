@@ -3,6 +3,24 @@ provider "aws" {
   region = var.aws_region
 }
 
+data "aws_route53_zone" "default" {
+  name  = "aws.itunufatoki.com."
+}
+
+# Create the Route53 record for the production product
+resource "aws_route53_record" "www" {
+  count = var.web_server_address_green ? 1 : 0
+  zone_id = data.aws_route53_zone.default.zone_id
+  name    = "www.${data.aws_route53_zone.default.name}"
+  type    = "A"
+  ttl     = "300"
+  alias {
+    name                   = var.web_server_address_green
+    zone_id                = var.web_server_zone_id_green
+    evaluate_target_health = true
+  }
+}
+
 # Create a VPC to launch our instances into
 resource "aws_vpc" "default" {
   cidr_block = "10.0.0.0/16"
