@@ -9,11 +9,10 @@ data "aws_route53_zone" "default" {
 
 # Create the Route53 record for the production product
 resource "aws_route53_record" "www" {
-  count = var.web_server_address_green ? 1 : 0
+  count = var.web_server_address_green == "" ? 0 : 1
   zone_id = data.aws_route53_zone.default.zone_id
   name    = "www.${data.aws_route53_zone.default.name}"
   type    = "A"
-  ttl     = "300"
   alias {
     name                   = var.web_server_address_green
     zone_id                = var.web_server_zone_id_green
@@ -96,4 +95,8 @@ resource "aws_security_group" "default" {
 resource "aws_key_pair" "auth" {
   key_name   = var.key_name
   public_key = file(var.public_key_path)
+}
+
+output "prod_address" {
+  value = length(aws_route53_record.www) == 0 ? "" : aws_route53_record.www[0].fqdn
 }
