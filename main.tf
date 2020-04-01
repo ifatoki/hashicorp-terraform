@@ -9,7 +9,7 @@ data "aws_route53_zone" "default" {
 
 # Create the Route53 record for the production product
 resource "aws_route53_record" "www" {
-  count = var.web_server_address_green == "" ? 0 : 1
+  count = var.web_server_address_green == "" || var.web_server_address_green == null ? 0 : 1
   zone_id = data.aws_route53_zone.default.zone_id
   name    = "www.${data.aws_route53_zone.default.name}"
   type    = "A"
@@ -28,6 +28,12 @@ resource "aws_vpc" "default" {
 # Create an internet gateway to give our subnet access to the outside world
 resource "aws_internet_gateway" "default" {
   vpc_id = aws_vpc.default.id
+}
+
+resource "aws_route" "internet_access" {
+  route_table_id         = aws_vpc.default.main_route_table_id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.default.id
 }
 
 # Create a subnet to launch our instances into
