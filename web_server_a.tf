@@ -1,5 +1,5 @@
 module "web_server_a" {
-  source = "git@github.com:ifatoki/web-server-terraform.git?ref=develop"
+  source = "git@github.com:ifatoki/web-server-terraform.git"
 
   app_version = "a"
   elb_sg_id = aws_security_group.elb.id
